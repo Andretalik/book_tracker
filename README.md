@@ -11,6 +11,13 @@ It's super easy to setup.
     - Clone this repo.
     - Create your virtualenv.
     - Pip install the requirements.
+  - Then while in the root directory run these commands to initialize your Database:
+  ```
+  from models import db
+  db.create_all()
+  ```
+
+That's it! You are now ready to run your API!
 
 ## Running the API
 To run the API, you need a few environment variables to the set, and don't forget to activate your virtualenv.
