@@ -8,30 +8,33 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 db = SQLAlchemy(app)
 
 
-book_to_user_relationship_table = db.Table(
-    book_id=db.Column(db.Integer, db.ForeignKey("books.id")),
-    user_id=db.Column(db.Integer, db.ForeignKey("users.id"))
-)
+class Book_User_Link_Table(db.Model):
+    """Store linking IDs for books and users."""
+
+    __tablename__ = "book_user_link"
+
+    id = db.Column(db.Integer, autoincrement=True, primary_key=True, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    book_id = db.Column(db.Integer, db.ForeignKey("book.id"))
+
+    books = db.relationship("Book")
+    users = db.relationship("User")
 
 
 class Book(db.Model):
     """Store the Book details."""
-
-    table_name = "books"
-
-    id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    name = db.Column(db.String)
-    description = db.Column(db.String)
-    completed = db.Column(db.Boolean)
+    id = db.Column(db.Integer, autoincrement=True, primary_key=True, nullable=False)
+    name = db.Column(db.String(80), nullable=False)
+    description = db.Column(db.String(120), nullable=False)
+    reading = db.Column(db.Boolean, default=False)
+    completed = db.Column(db.Boolean, default=False)
 
 
 class User(db.Model):
     """Store User details."""
-
-    table_name = "users"
-
-    id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    name = db.Column(db.String, unique=True)
+    id = db.Column(db.Integer, autoincrement=True, primary_key=True, nullable=False)
+    name = db.Column(db.String(80), unique=True, nullable=False)
+    password = db.Column(db.String(80), nullable=False)
 
     books = db.relationship("Book",
-                            secondary="book_to_user_relationship_table")
+                            secondary="book_user_link", lazy="dynamic")
